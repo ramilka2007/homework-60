@@ -1,26 +1,59 @@
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import { Typography } from '@mui/material';
+import React, { useEffect } from 'react';
 import SendMessageForm from '../../components/SendMessageForm/SendMessageForm';
+import { MessageType } from '../../../types';
+import Message from '../../components/Message/Message';
+import './Chat.css';
+
+const url = 'http://146.185.154.90:8000/messages';
 
 const Chat = () => {
+  const [messages, setMessages] = React.useState<MessageType[]>([]);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      const interval = setInterval(() => {
+        void fetchNewMessages();
+      }, 3000);
+
+      return () => clearInterval(interval);
+    } else {
+      void fetchMessages();
+    }
+  }, [messages]);
+
+  const fetchNewMessages = async () => {
+    const lastDate = messages[messages.length - 1].datetime;
+    const response = await fetch(url + '?datetime=' + lastDate);
+
+    if (response.ok) {
+      const newMessages = await response.json();
+
+      setMessages((prev) => [...prev, ...newMessages]);
+    }
+  };
+
+  const fetchMessages = async () => {
+    const response = await fetch(url);
+
+    if (response.ok) {
+      const newMessages = await response.json();
+
+      setMessages(newMessages);
+    }
+  };
+
   return (
     <>
-      <div>
+      <div className="sendForm">
         <SendMessageForm />
       </div>
-      <div>
-        <Card sx={{ minWidth: 275, maxWidth: 400 }}>
-          <CardContent>
-            <Typography variant="h5" component="div">
-              Username
-            </Typography>
-            <Typography sx={{ mb: 1.5 }} color="text.secondary">
-              Date
-            </Typography>
-            <Typography variant="body2">Message</Typography>
-          </CardContent>
-        </Card>
+      <div className="cards">
+        {messages
+          .reverse()
+          .map((message) => {
+            return <Message key={message._id} info={message} />;
+          })}
+        ;
       </div>
     </>
   );
