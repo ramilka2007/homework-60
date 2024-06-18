@@ -18,16 +18,25 @@ const Message: React.FC<MessageProps> = React.memo(
     return (
       <Card sx={{ width: 400 }}>
         <CardContent>
-          <Typography variant="h5" component="div">
-            <h2 style={{ margin: 0 }}>{info.author}</h2>
+          <Typography
+            variant="h5"
+            component="div"
+            style={{ fontWeight: 700, fontSize: 24 }}
+          >
+            {info.author}
           </Typography>
           <Typography sx={{ mb: 1.5 }} color="text.secondary">
             {messageDate(info.datetime)}
           </Typography>
           <hr />
-          <Typography variant="body2">
-            <h4>{info.message}</h4>
-          </Typography>
+          <h4>
+            <Typography
+              variant="body2"
+              style={{ fontWeight: 500, fontSize: 20 }}
+            >
+              {info.message}
+            </Typography>
+          </h4>
         </CardContent>
       </Card>
     );

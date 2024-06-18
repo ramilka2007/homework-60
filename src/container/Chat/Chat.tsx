@@ -49,11 +49,11 @@ const Chat = () => {
       </div>
       <div className="cards">
         {messages
+          .slice()
           .reverse()
           .map((message) => {
             return <Message key={message._id} info={message} />;
           })}
-        ;
       </div>
     </>
   );
